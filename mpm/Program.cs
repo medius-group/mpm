@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MPack
+namespace mpm
 {
     class Program
     {
@@ -18,7 +18,7 @@ namespace MPack
             }
 
             var command = args[0];
-            var engine = new MPackEngine.Engine(@"E:\GlobalPackageRepository", "");
+            var engine = new mpmEngine.Engine(@"E:\GlobalPackageRepository", "");
 
             switch (args[0].ToUpper())
             {
@@ -61,7 +61,7 @@ namespace MPack
         }
 
 
-        static public void MenuItem_List(string[] args, MPackEngine.Engine engine)
+        static public void MenuItem_List(string[] args, mpmEngine.Engine engine)
         {
             string filterCommand = "";
             List<Application> result = new List<Application>();
@@ -85,7 +85,7 @@ namespace MPack
             }
         }
 
-        static public void MenuItem_Info(string[] args, MPackEngine.Engine engine)
+        static public void MenuItem_Info(string[] args, mpmEngine.Engine engine)
         {
             string appName = "";
             string appVersion = "";
@@ -112,7 +112,7 @@ namespace MPack
             }
         }
 
-        static public void MenuItem_Get(string[] args, MPackEngine.Engine engine)
+        static public void MenuItem_Get(string[] args, mpmEngine.Engine engine)
         {
 
             string appName = "";
@@ -149,7 +149,7 @@ namespace MPack
 
         }
 
-        static public void MenuItem_Publish(string[] args, MPackEngine.Engine engine)
+        static public void MenuItem_Publish(string[] args, mpmEngine.Engine engine)
         {
 
             string appName = "";
@@ -208,7 +208,7 @@ namespace MPack
 
         static public void MenuItem_About()
         {
-            Console.WriteLine("MPack info");
+            Console.WriteLine("mpm info");
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
                 Console.WriteLine("Assembly name: {0}", assembly.FullName);
         }

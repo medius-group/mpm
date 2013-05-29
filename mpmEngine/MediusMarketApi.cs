@@ -8,7 +8,7 @@ using System.Configuration;
 
 using RestSharp;
 
-namespace MPackEngine
+namespace mpmEngine
 {
 public class MediusMarketApi {
     const string BaseUrl = "http://mf11market.azurewebsites.net/api/applications/";

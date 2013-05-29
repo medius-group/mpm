@@ -12,7 +12,7 @@ using System.Configuration;
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
-namespace MPackEngine
+namespace mpmEngine
 {
     public class Engine
     {

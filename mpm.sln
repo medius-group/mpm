@@ -1,8 +1,8 @@
 ﻿Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MPack", "MPack\MPack.csproj", "{DC6846C5-F151-4A7E-B98F-2F62E50F21E6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mpm", "mpm\mpm.csproj", "{DC6846C5-F151-4A7E-B98F-2F62E50F21E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MPackEngine", "MPackEngine\MPackEngine.csproj", "{F2039F21-112D-47CD-B73E-92530E489864}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mpmEngine", "mpmEngine\mpmEngine.csproj", "{F2039F21-112D-47CD-B73E-92530E489864}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
