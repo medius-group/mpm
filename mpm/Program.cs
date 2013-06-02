@@ -45,8 +45,6 @@ namespace mpm
                     MenuItem_Help();
                     break;
             }
-
-            Console.WriteLine("Done!");
         }
 
         static private bool checkArg(int index, string[] arg, ref string value)
@@ -75,13 +73,13 @@ namespace mpm
                 
             foreach (var itemApplication in result)
             {
-                Console.WriteLine(String.Format("-----------------------------"));
                 Console.WriteLine(String.Format("Application: {0}", itemApplication.name));   
+                Console.WriteLine(String.Format("Available versions:"));
                 foreach (var itemVersion in itemApplication.versions)
                 {
-                    Console.WriteLine(String.Format("Version: {0}", itemVersion.version));    
+                    Console.WriteLine(String.Format(itemVersion.version));    
                 }
-                Console.WriteLine(String.Format("-----------------------------"));   
+                Console.WriteLine(String.Format(" "));   
             }
         }
 
@@ -95,11 +93,10 @@ namespace mpm
                 {
                     //var result = engine.GetCurrentPackageRepositoryList().GetPackage(appName, appVersion);
                     var result = engine.GetApplicationVersion(appName, appVersion);
-                    Console.WriteLine("Getting app info:");
-                    Console.WriteLine(String.Format("Application: {0} - Version: {1}", appName, result.version));
+                    Console.WriteLine(String.Format("Application: {0} ({1})", appName, result.version));
 
-                    Console.WriteLine("Dependecies:");
-                    result.dependencies.ForEach(x => Console.WriteLine(" |- Application: {0}, version: {1}", x.name, x.version));
+                    Console.WriteLine("Dependencies:");
+                    result.dependencies.ForEach(x => Console.WriteLine(" |- Application: {0} ({1})", x.name, x.version));
                 }
                 catch(Exception ex)
                 {
@@ -123,19 +120,20 @@ namespace mpm
                 {
                     //var application = engine.GetCurrentPackageRepositoryList().GetPackage(appName, appVersion);
                     var applicationVersion = engine.GetApplicationVersion(appName, appVersion);
-                    Console.WriteLine("Selected app to download: {0} - {1}", appName, applicationVersion.version);
+                    Console.WriteLine("Application: {0} ({1})", appName, applicationVersion.version);
 
                     //var result = engine.GetCurrentPackageRepositoryList().GetFullDownloadListForApplication(appName, appVersion);
 
                     var result = engine.GetFullDownloadListForApplication(appName, appVersion);
 
                     Console.WriteLine("Full download list:");
-                    result.ForEach(x => Console.WriteLine("Download URL: {0}", x[2]));
+                    result.ForEach(x => Console.WriteLine(x[2]));
+                    Console.WriteLine(" ");
 
-                    Console.WriteLine("Downloading...");
+                    Console.WriteLine("Download and unzip files...");
                     engine.downloadApplicationVersions(result);
 
-                    Console.WriteLine("All content was downloaded!");
+                    Console.WriteLine("All content was downloaded and unzipped!");
                 }
                 catch(Exception ex)
                 {

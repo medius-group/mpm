@@ -75,9 +75,9 @@ namespace mpmEngine
                 //var destAppDir = destRootDir.CreateSubdirectory(package.ApplicationName +"_"+ package.ApplicationVersion);
                 try {
                     WebClient webClient = new WebClient();
-                    string fileName = itemDownloadVersion[0] + "_" + itemDownloadVersion[1] + ".zip";
+                    string fileName = itemDownloadVersion[0].ToLower() + "_" + itemDownloadVersion[1].ToLower() + ".zip";
                     string filePath = Path.Combine(ConfigurationManager.AppSettings.Get("PackageRepositoryTempPath"), fileName); 
-                    Console.WriteLine("Download from {0} to {1}...", itemDownloadVersion[2], filePath);
+                    Console.WriteLine("Download: {0}", itemDownloadVersion[2]);
                     webClient.DownloadFile(itemDownloadVersion[2], filePath);
 
                     //stream data = webClient.OpenRead(itemDownloadVersion[2]);
@@ -93,10 +93,6 @@ namespace mpmEngine
                             ex = ex.InnerException;
                         }
                 }
-
-
-                //createDirectoriesAndFiles(sourceAppDir, destRootDir, package.ApplicationName + "_" + package.ApplicationVersion);
-                Console.WriteLine("Done!");
             }
         }
 
@@ -109,7 +105,7 @@ namespace mpmEngine
                 return;
             }
 
-            string baseDirectoryName = Path.Combine(ConfigurationManager.AppSettings.Get("PackageRepositoryPath"), Path.GetFileNameWithoutExtension(filePath));
+            string baseDirectoryName = Path.Combine(ConfigurationManager.AppSettings.Get("PackageRepositoryPath"), Path.GetFileNameWithoutExtension(filePath).ToLower());
 
             if ( baseDirectoryName.Length > 0 ) {
                         Directory.CreateDirectory(baseDirectoryName);
@@ -119,8 +115,6 @@ namespace mpmEngine
             
                 ZipEntry theEntry;
                 while ((theEntry = s.GetNextEntry()) != null) {
-                    
-                    Console.WriteLine(theEntry.Name);
                     
                     string directoryName = Path.GetDirectoryName(Path.Combine(baseDirectoryName , theEntry.Name));
                     string fileName      = Path.GetFileName(theEntry.Name);

@@ -31,8 +31,8 @@ public class MediusMarketApi {
         //Console.WriteLine("Rest response: {0}", response.Data);
         if (response.ErrorException != null)
         {
-            Console.WriteLine("Rest response content: {0}", response.Content);
-            Console.WriteLine("Rest response data: {0}", response.Data);
+            Console.WriteLine("Error in communication with Mediusflow Market.");
+            Console.WriteLine("Response content: {0}", response.Content);            
             throw response.ErrorException;
         }
 
