@@ -87,25 +87,23 @@ namespace mpm
         {
             string appName = "";
             string appVersion = "";
-            if (checkArg(1, args, ref appName) && checkArg(2, args, ref appVersion))
-            {
-                try
-                {
-                    //var result = engine.GetCurrentPackageRepositoryList().GetPackage(appName, appVersion);
-                    var result = engine.GetApplicationVersion(appName, appVersion);
-                    Console.WriteLine(String.Format("Application: {0} ({1})", appName, result.version));
+            try {
+                if (checkArg(1, args, ref appName)) {
+                    appVersion = "*.*.*.*";
+                } 
+                else {
+                    throw new System.ArgumentException("Parameter cannot be null.", "Application");
+                }
 
-                    Console.WriteLine("Dependencies:");
-                    result.dependencies.ForEach(x => Console.WriteLine(" |- Application: {0} ({1})", x.name, x.version));
-                }
-                catch(Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+                var result = engine.GetApplicationVersion(appName, appVersion);
+                Console.WriteLine(String.Format("Application: {0} ({1})", appName, result.version));
+
+                Console.WriteLine("Dependencies:");
+                result.dependencies.ForEach(x => Console.WriteLine(" |- Application: {0} ({1})", x.name, x.version));
+            
             }
-            else
-            {
-                Console.WriteLine("Check input, give app name as first argument and version as the second", appName, appVersion);
+            catch(Exception ex) {
+                Console.WriteLine(ex.Message);
             }
         }
 
@@ -114,37 +112,32 @@ namespace mpm
 
             string appName = "";
             string appVersion = "";
-            if (checkArg(1, args, ref appName) && checkArg(2, args, ref appVersion))
-            {
-                try
-                {
-                    //var application = engine.GetCurrentPackageRepositoryList().GetPackage(appName, appVersion);
-                    var applicationVersion = engine.GetApplicationVersion(appName, appVersion);
-                    Console.WriteLine("Application: {0} ({1})", appName, applicationVersion.version);
-
-                    //var result = engine.GetCurrentPackageRepositoryList().GetFullDownloadListForApplication(appName, appVersion);
-
-                    var result = engine.GetFullDownloadListForApplication(appName, appVersion);
-
-                    Console.WriteLine("Full download list:");
-                    result.ForEach(x => Console.WriteLine(x[2]));
-                    Console.WriteLine(" ");
-
-                    Console.WriteLine("Download and unzip files...");
-                    engine.downloadApplicationVersions(result);
-
-                    Console.WriteLine("All content was downloaded and unzipped!");
+            try {
+                if (checkArg(1, args, ref appName)) {
+                    appVersion = "*.*.*.*";
+                } 
+                else {
+                    throw new System.ArgumentException("Parameter cannot be null.", "Application");
                 }
-                catch(Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-            else
-            {
-                Console.WriteLine("Check input, give app name as first argument and version as the second", appName, appVersion);
-            }
 
+                var applicationVersion = engine.GetApplicationVersion(appName, appVersion);
+                Console.WriteLine("Application: {0} ({1})", appName, applicationVersion.version);
+
+                var result = engine.GetFullDownloadListForApplication(appName, appVersion);
+
+                Console.WriteLine("Full download list:");
+                result.ForEach(x => Console.WriteLine(x[2]));
+                Console.WriteLine(" ");
+
+                Console.WriteLine("Download and unzip files...");
+                engine.downloadApplicationVersions(result);
+
+                Console.WriteLine("All content was downloaded and unzipped!");
+                }
+
+            catch(Exception ex) {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         static public void MenuItem_Publish(string[] args, mpmEngine.Engine engine)
