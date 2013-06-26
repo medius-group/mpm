@@ -12,7 +12,7 @@ namespace mpm
 
             if (args.Length == 0)
             {
-                Console.WriteLine("You need to provide an argument");
+                Console.WriteLine("You need to provide an argument...");
                 MenuItem_Help();
                 return;
             }
