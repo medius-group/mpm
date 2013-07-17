@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Collections.Generic;
 using System.Collections;
@@ -8,10 +9,10 @@ using System.Text;
 
 using System.Xml.Serialization;
 using System.Configuration;
-
+/*
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
-
+*/
 namespace mpmEngine
 {
     public class Engine
@@ -82,7 +83,7 @@ namespace mpmEngine
 
                     //stream data = webClient.OpenRead(itemDownloadVersion[2]);
                     // This stream cannot be opened with the ZipFile class because CanSeek is false.
-                    UnzipFile(filePath);
+                    UnzipFileNet(filePath);
                     File.Delete(filePath);
                 }
                 catch (Exception ex)
@@ -95,7 +96,7 @@ namespace mpmEngine
                 }
             }
         }
-
+/*
         public void UnzipFile(string filePath) {
 
             // Perform simple parameter checking.
@@ -142,7 +143,25 @@ namespace mpmEngine
                 }
             }
         }
+        */
+        public string ZipApplicationNet (string directoryPath)
+        {
+            directoryPath = Path.GetFullPath(directoryPath);
+            Console.WriteLine("directoryPath: {0}", directoryPath);
+            string folderName = new DirectoryInfo(directoryPath).Name;
+            string zipPath = Path.Combine(ConfigurationManager.AppSettings.Get("PackageRepositoryTempPath"), (folderName + ".zip"));
+            ZipFile.CreateFromDirectory(directoryPath, zipPath);
+            return zipPath;
+        }
 
+        public string UnzipFileNet (string zipPath)
+        {
+            string extractPath = Path.Combine(ConfigurationManager.AppSettings.Get("PackageRepositoryPath"), Path.GetFileNameWithoutExtension(zipPath).ToLower());
+
+            ZipFile.ExtractToDirectory(zipPath, extractPath);
+            return extractPath;
+        } 
+        /*
         public string ZipApplication (string directoryPath)
         {
             // Perform some simple parameter checking.  More could be done
@@ -156,8 +175,6 @@ namespace mpmEngine
 
             try
             {
-                // Depending on the directory this could be very large and would require more attention
-                // in a commercial package.
                 directoryPath = Path.GetFullPath(directoryPath);
                 int trimOffset = Path.GetFullPath(directoryPath).Length + 1;
                 Console.WriteLine("directoryPath: {0}", directoryPath);
@@ -172,7 +189,7 @@ namespace mpmEngine
                 // of problems otherwise.  Its exception safe as well which is great.
                 using (ZipOutputStream s = new ZipOutputStream(File.Create(fileName))) {
                 
-                    s.SetLevel(0); // 0 - store only to 9 - means best compression
+                    s.SetLevel(8); // 0 - store only to 9 - means best compression
             
                     byte[] buffer = new byte[4096];
                     
@@ -226,11 +243,11 @@ namespace mpmEngine
                 // No need to rethrow the exception as for our purposes its handled.
             }
         }
-
+        */
         public void PublishApplicationVersion(string applicationName, string applicationVersion) {
             //Zip application
             Console.WriteLine("Start zipping application: {0}, version: {1}", applicationName, applicationVersion);
-            var fileName = ZipApplication(Path.Combine(ConfigurationManager.AppSettings.Get("PackageRepositoryPath"), (applicationName + "_" + applicationVersion)));
+            var fileName = ZipApplicationNet(Path.Combine(ConfigurationManager.AppSettings.Get("PackageRepositoryPath"), (applicationName + "_" + applicationVersion)));
             //Upload application
             _mediusMarketApi.PublishApplication(fileName);
 

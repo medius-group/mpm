@@ -28,7 +28,6 @@ public class MediusMarketApi {
         //client.Authenticator = new HttpBasicAuthenticator(_accountSid, _secretKey);
         //request.AddParameter("AccountSid", _accountSid, ParameterType.UrlSegment); // used on every request
         var response = client.Execute<T>(request);
-        //Console.WriteLine("Rest response: {0}", response.Data);
         if (response.ErrorException != null)
         {
             Console.WriteLine("Error in communication with Mediusflow Market.");
