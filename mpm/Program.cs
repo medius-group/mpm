@@ -89,7 +89,13 @@ namespace mpm
             string appVersion = "";
             try {
                 if (checkArg(1, args, ref appName)) {
-                    appVersion = "*.*.*.*";
+                    if (checkArg(2, args, ref appVersion)) {
+                        Console.WriteLine(String.Format("Searching for application: {0} ({1})", appName, appVersion));
+                    }
+                    else {
+                        appVersion = "*.*.*.*";
+                        Console.WriteLine(String.Format("Searching for application: {0} ({1})", appName, appVersion));
+                    }
                 } 
                 else {
                     throw new System.ArgumentException("Parameter cannot be null.", "Application");
@@ -114,7 +120,15 @@ namespace mpm
             string appVersion = "";
             try {
                 if (checkArg(1, args, ref appName)) {
-                    appVersion = "*.*.*.*";
+                    if (checkArg(2, args, ref appVersion))
+                    {
+                        Console.WriteLine(String.Format("Searching for application: {0} ({1})", appName, appVersion));
+                    }
+                    else
+                    {
+                        appVersion = "*.*.*.*";
+                        Console.WriteLine(String.Format("Searching for application: {0} ({1})", appName, appVersion));
+                    }
                 } 
                 else {
                     throw new System.ArgumentException("Parameter cannot be null.", "Application");
@@ -165,11 +179,6 @@ namespace mpm
                     }
                     
                     engine.PublishApplicationVersion(appName, appVersion);
-                    //Zip application
-
-                    //Upload application
-
-                    //Delete zip
                 }
                 catch(Exception ex)
                 {

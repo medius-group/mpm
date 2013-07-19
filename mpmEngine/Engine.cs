@@ -9,10 +9,7 @@ using System.Text;
 
 using System.Xml.Serialization;
 using System.Configuration;
-/*
-using ICSharpCode.SharpZipLib.Zip;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
-*/
+
 namespace mpmEngine
 {
     public class Engine
@@ -96,54 +93,7 @@ namespace mpmEngine
                 }
             }
         }
-/*
-        public void UnzipFile(string filePath) {
 
-            // Perform simple parameter checking.
-            
-            if ( !File.Exists(filePath) ) {
-                Console.WriteLine("Cannot find file '{0}'", filePath);
-                return;
-            }
-
-            string baseDirectoryName = Path.Combine(ConfigurationManager.AppSettings.Get("PackageRepositoryPath"), Path.GetFileNameWithoutExtension(filePath).ToLower());
-
-            if ( baseDirectoryName.Length > 0 ) {
-                        Directory.CreateDirectory(baseDirectoryName);
-            }
-
-            using (ZipInputStream s = new ZipInputStream(File.OpenRead(filePath))) {
-            
-                ZipEntry theEntry;
-                while ((theEntry = s.GetNextEntry()) != null) {
-                    
-                    string directoryName = Path.GetDirectoryName(Path.Combine(baseDirectoryName , theEntry.Name));
-                    string fileName      = Path.GetFileName(theEntry.Name);
-                    
-                    // create directory
-                    if ( directoryName.Length > 0 ) {
-                        Directory.CreateDirectory(directoryName);
-                    }
-                    
-                    if (fileName != String.Empty) {
-                        using (FileStream streamWriter = File.Create(Path.Combine(baseDirectoryName , theEntry.Name))) {
-                        
-                            int size = 2048;
-                            byte[] data = new byte[2048];
-                            while (true) {
-                                size = s.Read(data, 0, data.Length);
-                                if (size > 0) {
-                                    streamWriter.Write(data, 0, size);
-                                } else {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        */
         public string ZipApplicationNet (string directoryPath)
         {
             directoryPath = Path.GetFullPath(directoryPath);
@@ -161,89 +111,7 @@ namespace mpmEngine
             ZipFile.ExtractToDirectory(zipPath, extractPath);
             return extractPath;
         } 
-        /*
-        public string ZipApplication (string directoryPath)
-        {
-            // Perform some simple parameter checking.  More could be done
-            // like checking the target file name is ok, disk space, and lots
-            // of other things, but for a demo this covers some obvious traps.
 
-            if ( !Directory.Exists(directoryPath) ) {
-                Console.WriteLine("Cannot find directory '{0}'", directoryPath);
-                return null;
-            }
-
-            try
-            {
-                directoryPath = Path.GetFullPath(directoryPath);
-                int trimOffset = Path.GetFullPath(directoryPath).Length + 1;
-                Console.WriteLine("directoryPath: {0}", directoryPath);
-                //string[] filenames = Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories);
-                List<string> fileSystemEntries = new List<string>();
-                fileSystemEntries.AddRange(Directory.GetDirectories(directoryPath, "*", SearchOption.AllDirectories).Select(d => d + "\\"));
-                fileSystemEntries.AddRange(Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories));
-                string folderName = new DirectoryInfo(directoryPath).Name;
-                string fileName = Path.Combine(ConfigurationManager.AppSettings.Get("PackageRepositoryTempPath"), (folderName + ".zip"));
-                Console.WriteLine("Zip application to {0}", fileName);
-                // 'using' statements guarantee the stream is closed properly which is a big source
-                // of problems otherwise.  Its exception safe as well which is great.
-                using (ZipOutputStream s = new ZipOutputStream(File.Create(fileName))) {
-                
-                    s.SetLevel(8); // 0 - store only to 9 - means best compression
-            
-                    byte[] buffer = new byte[4096];
-                    
-                    foreach (string file in fileSystemEntries) {
-                        // Using GetFileName makes the result compatible with XP
-                        // as the resulting path is not absolute.
-                        ZipEntry entry = new ZipEntry(file.Substring(trimOffset));
-                        entry.DateTime = DateTime.Now;
-                        s.PutNextEntry(entry);
-
-                        if (file.EndsWith(@"\")) {
-                            Console.WriteLine("Path: {0}", file.Substring(trimOffset));
-                            continue;
-                        }
-                        // Setup the entry data as required.
-                        
-                        // Crc and size are handled by the library for seakable streams
-                        // so no need to do them here.
-
-                        // Could also use the last write time or similar for the file.
-                        
-                        
-                        using ( FileStream fs = File.OpenRead(file) ) {
-            
-                            // Using a fixed size buffer here makes no noticeable difference for output
-                            // but keeps a lid on memory usage.
-                            int sourceBytes;
-                            do {
-                                sourceBytes = fs.Read(buffer, 0, buffer.Length);
-                                s.Write(buffer, 0, sourceBytes);
-                            } while ( sourceBytes > 0 );
-                        }
-                    }
-                    
-                    // Finish/Close arent needed strictly as the using statement does this automatically
-                    
-                    // Finish is important to ensure trailing information for a Zip file is appended.  Without this
-                    // the created file would be invalid.
-                    s.Finish();
-                    
-                    // Close is important to wrap things up and unlock the file.
-                    s.Close();
-                }
-                return fileName;
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine("Exception during processing {0}", ex);
-                return null;
-                
-                // No need to rethrow the exception as for our purposes its handled.
-            }
-        }
-        */
         public void PublishApplicationVersion(string applicationName, string applicationVersion) {
             //Zip application
             Console.WriteLine("Start zipping application: {0}, version: {1}", applicationName, applicationVersion);
