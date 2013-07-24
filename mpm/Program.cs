@@ -159,36 +159,46 @@ namespace mpm
 
             string appName = "";
             string appVersion = "";
-            if (checkArg(1, args, ref appName) && checkArg(2, args, ref appVersion))
-            {
-                try
-                {
-
+           
+                
                     //Verify that application exists on disk
-                    if (engine.VerifyApplicationVersionOnDisk(appName, appVersion)) {
-                        Console.WriteLine("Application: {0}, version {1} exists on disk", appName, appVersion);            
-                    } else {
-                        throw new Exception(string.Format("Application: {0}, version {1} does NOT exist on disk", appName, appVersion));
-                    }
+                    foreach (string[] application in engine.VerifyApplicationVersionOnDiskFromManifest(appName, appVersion))
+                    {
+                        try
+                        {
 
-                    //Verify if application already exists in registry
-                    if (engine.VerifyApplicationVersionInRegistry(appName, appVersion)) {
-                        throw new Exception(string.Format("Application: {0}, version {1} exists in registry", appName, appVersion));
-                    } else {
-                        Console.WriteLine("Application: {0}, version {1} does NOT in registry", appName, appVersion);
-                    }
-                    
-                    engine.PublishApplicationVersion(appName, appVersion);
-                }
-                catch(Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-            else
-            {
-                Console.WriteLine("Check input, give app name as first argument and version as the second", appName, appVersion);
-            }
+                        Console.WriteLine("Application: {0}, version {1} exists on disk: " + Environment.NewLine + "{2}", application[0], application[1], application[2]);
+
+                        //Verify if application already exists in registry
+                        if (engine.VerifyApplicationVersionInRegistry(application[0], application[1]))
+                        {
+                            throw new Exception(string.Format("Application: {0}, version {1} exists in registry", application[0], application[1]));
+                        }
+                        else
+                        {
+                            Console.WriteLine("Application: {0}, version {1} does NOT in registry", application[0], application[1]);
+                        }
+
+                        Console.WriteLine("Are you sure you want to publish application: {0}, version {1}? (y / n)", application[0], application[1]);
+                        string line = Console.ReadLine(); // Get string from user
+                        if (line != "y") 
+                        {
+                            Console.WriteLine("Application: {0}, version {1} will NOT be published? ", application[0], application[1]);
+                            continue;
+                        }
+
+                        Console.WriteLine("Start publishing application: {0}, version: {1}", application[0], application[1]);
+                        engine.PublishApplicationVersion(application[2]);
+                        Console.WriteLine("Publishing completed!");
+                        }
+
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+
+                       }
+                
 
         }
 

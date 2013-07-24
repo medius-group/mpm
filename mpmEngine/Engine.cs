@@ -9,6 +9,7 @@ using System.Text;
 
 using System.Xml.Serialization;
 using System.Configuration;
+using System.Xml;
 
 namespace mpmEngine
 {
@@ -20,6 +21,7 @@ namespace mpmEngine
         private MediusMarketApi _mediusMarketApi;
         string _manifestFileName;
         private List<Application> _applicationCollection;
+        
 
         public Engine(string foreignPackageStore, string localPackageStore)
         {
@@ -112,14 +114,13 @@ namespace mpmEngine
             return extractPath;
         } 
 
-        public void PublishApplicationVersion(string applicationName, string applicationVersion) {
-            //Zip application
-            Console.WriteLine("Start zipping application: {0}, version: {1}", applicationName, applicationVersion);
-            var fileName = ZipApplicationNet(Path.Combine(ConfigurationManager.AppSettings.Get("PackageRepositoryPath"), (applicationName + "_" + applicationVersion)));
+        public void PublishApplicationVersion(string filePath) {            
+            var fileName = ZipApplicationNet(Path.GetDirectoryName(filePath));
             //Upload application
             _mediusMarketApi.PublishApplication(fileName);
+            Console.Write(fileName);
+            File.Delete(fileName);
 
-            //Delete zip
         }
 
         public bool VerifyApplicationVersionInRegistry(string applicationName, string applicationVersion) {
@@ -133,6 +134,52 @@ namespace mpmEngine
 
         public bool VerifyApplicationVersionOnDisk(string applicationName, string applicationVersion) {
             return Directory.Exists(Path.Combine(ConfigurationManager.AppSettings.Get("PackageRepositoryPath"), (applicationName + "_" + applicationVersion)));
+        }
+
+        public List<string[]> VerifyApplicationVersionOnDiskFromManifest(string applicationName, string applicationVersion) {
+            List<string[]> results = new List<string[]>();
+            string xmlApplicationName;
+            string xmlApplicationVersion;
+            string compareApplicationName;
+            string compareApplicationVersion;
+            XmlDocument xmlDoc = new XmlDocument();
+            
+      
+            string[] filePaths = Directory.GetFiles(ConfigurationManager.AppSettings.Get("PackageRepositoryPath"), "Manifest.xml", SearchOption.AllDirectories);
+            
+            foreach (string filePath in filePaths) {
+                xmlDoc.Load(filePath);
+                xmlApplicationName = xmlDoc.SelectSingleNode("/Package").Attributes["Name"].Value;
+                xmlApplicationVersion = xmlDoc.SelectSingleNode("/Package").Attributes["Version"].Value;
+                
+                if (String.IsNullOrEmpty(applicationName))
+                {
+                    compareApplicationName = xmlApplicationName;
+                }
+                else
+                {
+                    compareApplicationName = applicationName;
+                }
+
+                if (String.IsNullOrEmpty(applicationVersion))
+                {
+                    compareApplicationVersion = xmlApplicationVersion;
+                }
+                else
+                {
+                    compareApplicationVersion = applicationVersion;
+                }
+
+                if (String.Equals(xmlApplicationName, compareApplicationName, StringComparison.OrdinalIgnoreCase) && String.Equals(xmlApplicationVersion, compareApplicationVersion, StringComparison.OrdinalIgnoreCase))
+                {
+                    string[] result = new string[3];
+                    result[0] = xmlApplicationName; 
+                    result[1] = xmlApplicationVersion; 
+                    result[2] = filePath;
+                    results.Add(result);
+                } 
+            }
+            return results;
         }
     }
 }
